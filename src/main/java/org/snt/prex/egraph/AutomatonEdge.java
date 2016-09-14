@@ -26,15 +26,15 @@ public class AutomatonEdge implements Cloneable {
 
 
     public enum EdgeKind {
+        SUBST,
+        INS,
+        DEL,
+
         NORMAL,
         BACK,
         FWD,
         CROSS,
-        TREE,
-
-        SUBST,
-        INS,
-        DEL;
+        TREE;
 
         public boolean isMatching() {
             return this == NORMAL || this == BACK || this == FWD || this == CROSS || this == TREE;
@@ -106,6 +106,7 @@ public class AutomatonEdge implements Cloneable {
     public void setTrans(Transition t) {
         this.trans = t;
     }
+
     public Transition getTrans() {
         return this.trans;
     }
@@ -145,10 +146,6 @@ public class AutomatonEdge implements Cloneable {
         else return "(" + this.getLevel() + ")" +  Character.toString(trans.getMin());
     }
 
-
-    /**
-     * Returns a shallow copy of the edge.
-     */
     @Override
     public AutomatonEdge clone() {
         return new AutomatonEdge(this);

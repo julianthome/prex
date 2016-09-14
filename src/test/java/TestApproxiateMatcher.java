@@ -17,11 +17,10 @@
 * limitations under the Licence.
 */
 
-import dk.brics.automaton.RegExp;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.prex.Approx;
+import org.snt.prex.Prex;
 
 
 public class TestApproxiateMatcher {
@@ -35,9 +34,10 @@ public class TestApproxiateMatcher {
 
         //Automaton b = new RegExp("598d4c200461b81522a3328565c25f7c").toAutomaton();
 
-        Approx am = new Approx(new RegExp("gcg[abc]+").toAutomaton());
+        Prex am = new Prex("gcg[abc]+");
 
-        logger.info("RET "+ am.evaluateCost("GCGa"));
+        System.out.println(am.evaluateCost("GCGa", true));
+        System.out.println(am.evaluateCost("GCGa", false));
 
     }
 

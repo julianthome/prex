@@ -39,14 +39,14 @@ public class EditNode {
     private int id = 0;
     private char c;
     private int pos = 0;
-    private int sum = 0;
-    private int steps = 0;
+    private double sum = 0;
+    private double steps = 0;
     private State state;
 
 
     private AutomatonNode nptr;
 
-    public EditNode(AutomatonNode nptr, char c, int pos, int steps) {
+    public EditNode(AutomatonNode nptr, char c, int pos, double steps) {
         this.id = eid++;
         this.c = c;
         this.nptr = nptr;
@@ -68,11 +68,11 @@ public class EditNode {
         return this.id;
     }
 
-    public int getSum() {
+    public double getSum() {
         return sum;
     }
 
-    public void setSum(int sum) {
+    public void setSum(double sum) {
         this.sum = sum;
     }
 
@@ -88,7 +88,7 @@ public class EditNode {
         this.steps = steps;
     }
 
-    public int getSteps() {
+    public double getSteps() {
         return this.steps;
     }
 

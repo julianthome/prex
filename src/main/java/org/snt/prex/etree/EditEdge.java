@@ -26,11 +26,11 @@ public class EditEdge {
 
     private EditNode src;
     private EditNode dst;
-    private int cost;
+    private double cost;
     private AutomatonEdge ae;
     private AutomatonEdge.EdgeKind kind;
 
-    public EditEdge(EditNode src, EditNode dst, int cost, AutomatonEdge.EdgeKind kind, AutomatonEdge ae){
+    public EditEdge(EditNode src, EditNode dst, double cost, AutomatonEdge.EdgeKind kind, AutomatonEdge ae){
         this.src = src;
         this.dst = dst;
         this.cost = cost;
@@ -47,7 +47,7 @@ public class EditEdge {
         return this.dst;
     }
 
-    public int getCost() {
+    public double getCost() {
         return this.cost;
     }
 

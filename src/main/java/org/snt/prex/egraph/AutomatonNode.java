@@ -72,17 +72,7 @@ public class AutomatonNode implements Cloneable {
 
     private NodeKind kind;
 
-
     private int level;
-    private int barrier;
-
-    public int getBarrier() {
-        return barrier;
-    }
-
-    public void setBarrier(int barrier) {
-        this.barrier = barrier;
-    }
 
     public AutomatonNode(NodeKind kind, State s, int level) {
         this.s = s;
@@ -92,8 +82,6 @@ public class AutomatonNode implements Cloneable {
         this.color = Color.WHITE;
         this.d = 0;
         this.f = 0;
-        this.barrier = 0;
-
     }
 
     public State getState() {

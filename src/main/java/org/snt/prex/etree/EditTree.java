@@ -81,7 +81,7 @@ public class EditTree extends DirectedAcyclicGraph<EditNode, EditEdge> {
     }
 
 
-    public LinkedList<EditNode> getMinLeafs(int globalMin) {
+    public LinkedList<EditNode> getMinLeafs(double globalMin) {
 
         assert(!this.vertexSet().isEmpty());
 
@@ -93,7 +93,7 @@ public class EditTree extends DirectedAcyclicGraph<EditNode, EditEdge> {
             return ret;
         }
 
-        int mincost = leafs.iterator().next().getSum();
+        double mincost = leafs.iterator().next().getSum();
 
         for(EditNode n : leafs) {
 
