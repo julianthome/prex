@@ -98,7 +98,6 @@ public class AutomatonNode implements Cloneable {
     }
 
 
-
     public void setKind(NodeKind kind) {
         this.kind = kind;
     }

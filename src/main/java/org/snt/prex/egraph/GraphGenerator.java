@@ -22,7 +22,6 @@ package org.snt.prex.egraph;
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.State;
 import dk.brics.automaton.Transition;
-import org.jgrapht.alg.cycle.SzwarcfiterLauerSimpleCycles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -233,66 +232,6 @@ public class GraphGenerator {
         srcnode.setF(this.timer);
     }
 
-    public AutomatonGraph group(AutomatonGraph sg, List<LoopPartition> l) {
 
-        for(LoopPartition t : l) {
-
-            List<AutomatonNode> nods = t.getPlainNodes();
-            assert(nods.size() > 0);
-
-
-            AutomatonNode root = nods.get(0);
-
-            Set<AutomatonEdge> incoming = g.incomingEdgesOf(root);
-
-            AutomatonGraph subgraph = g.subgraph(nods);
-
-            logger.info(subgraph.toString());
-            g.removeAllVertices(subgraph.vertexSet());
-
-            break;
-        }
-
-        return null;
-
-
-    }
-
-    public List<LoopPartition> getCyclePartitions(AutomatonGraph g) {
-        SzwarcfiterLauerSimpleCycles<AutomatonNode, AutomatonEdge> slauer = new SzwarcfiterLauerSimpleCycles(g);
-        List<List<AutomatonNode>> cyc = slauer.findSimpleCycles();
-
-        List<LoopPartition> pset = new ArrayList<LoopPartition>();
-
-        Collections.sort(cyc, new Comparator<List<AutomatonNode>>(){
-            public int compare(List<AutomatonNode> a1, List<AutomatonNode> a2) {
-                return a2.size() - a1.size(); // assumes you want biggest to smallest
-            }
-        });
-
-        for(List<AutomatonNode> l : cyc) {
-            LoopPartition np = new LoopPartition(l);
-            pset.add(np);
-        }
-
-        boolean cont = true;
-
-        // Fixed Point Iteration
-        while(cont) {
-            cont = false;
-            for(LoopPartition p : pset) {
-                int idx = pset.indexOf(p);
-                idx ++;
-                while(idx < pset.size()) {
-                    LoopPartition op = pset.get(idx);
-                    //logger.info("CC " + p);
-                    //logger.info("OTH " + op);
-                    cont = p.subAndReplace(op) || cont;
-                    idx ++;
-                }
-            }
-        }
-        return pset;
-    }
 
 }
