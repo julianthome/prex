@@ -81,6 +81,7 @@ public class Prex {
 
         boolean printTree = false;
         boolean ignoreCase = false;
+        boolean normalize = false;
 
         double icost = 1.0;
         double scost = 1.0;
@@ -140,12 +141,21 @@ public class Prex {
                 .required(false)
                 .build();
 
+        Option n = Option.builder("n")
+                .longOpt("normalize")
+                .numberOfArgs(0)
+                .valueSeparator(' ')
+                .desc("normalize cost to a value in range [0,1]")
+                .required(false)
+                .build();
+
 
         options.addOption(s);
         options.addOption(r);
         options.addOption(c);
         options.addOption(t);
         options.addOption(ic);
+        options.addOption(n);
 
 
         CommandLineParser parser = new DefaultParser();
@@ -181,9 +191,12 @@ public class Prex {
         if (cmd.hasOption("ic"))
             ignoreCase = true;
 
+        if (cmd.hasOption("n"))
+            normalize = true;
+
         Prex prex = new Prex(regex, icost, scost, dcost);
 
-        double cost = prex.evaluateCost(string, ignoreCase, printTree);
+        double cost = prex.evaluateCost(string, ignoreCase, normalize, printTree);
 
         System.out.println("Cost : " + cost);
     }
@@ -286,14 +299,23 @@ public class Prex {
     }
 
     public double evaluateCost(String s) {
-        return evaluateCost(s, false, false);
+        return evaluateCost(s, false, true, false);
     }
 
-    public double evaluateCost(String s, boolean ignoreCase) {
-        return evaluateCost(s, ignoreCase, false);
+    public double evaluateCost(String s, boolean ignoreCase, boolean normalize) {
+        return evaluateCost(s, ignoreCase, normalize, false);
     }
 
-    private double evaluateCost(String s, boolean ignoreCase, boolean printTree) {
+    private double evaluateCost(String s,
+                                boolean ignoreCase,
+                                boolean normalize,
+                                boolean printTree) {
+
+        // special case - if automaton is empty string
+        // we can just return the lenght of s as cost
+        if(this.a.isEmptyString()) {
+            return s.length();
+        }
 
         this.step = 0;
         EditTree et = new EditTree();
@@ -342,13 +364,17 @@ public class Prex {
         double cost = 0.0;
 
         if (this.step != 0.0) {
-            cost = (double) globalMin / (double) this.step;
+            cost = (double) globalMin;
         } else {
             cost = 1.0;
         }
 
         if (printTree) {
             System.out.println(et.toString());
+        }
+
+        if(normalize) {
+            cost = (double)cost/(double)this.step;
         }
 
         return cost;

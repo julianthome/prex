@@ -17,31 +17,67 @@
 * limitations under the Licence.
 */
 
+import junit.framework.Assert;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snt.prex.Prex;
 
+import java.util.Random;
+
 
 public class TestApproxiateMatcher {
 
     final static Logger logger = LoggerFactory.getLogger(TestApproxiateMatcher.class);
-
-
-
+    
     @Test
-    public void testInvocation() {
-
-        //Automaton b = new RegExp("598d4c200461b81522a3328565c25f7c").toAutomaton();
-
+    public void testSimple() {
         Prex am = new Prex("gcg[abc]+");
-
-        System.out.println(am.evaluateCost("GCGa", true));
-        System.out.println(am.evaluateCost("GCGa", false));
-
+        Assert.assertTrue(am.evaluateCost("GCGa", true, true) == 0);
+        Assert.assertTrue(am.evaluateCost("GCGa", false, true) == 0.75);
+        Assert.assertTrue(am.evaluateCost("GCGa", true, false) == 0);
+        Assert.assertTrue(am.evaluateCost("GCGa", false, false) == 3);
     }
 
 
+    @Test
+    public void testLevenshtein() {
+
+        RandomStringUtils rs = new RandomStringUtils();
+        Random randomGenerator = new Random();
+
+        for(int i = 0; i < 100; i++) {
+            int size0 =  randomGenerator.nextInt(25);
+            int size1 =  randomGenerator.nextInt(25);
+            String s1 = rs.randomAlphanumeric(size0);
+            String s2 = rs.randomAlphanumeric(size1);
+            Prex am = new Prex(s1);
+            double pdiff = am.evaluateCost(s2,false,false);
+            double ldiff = Math.abs(StringUtils.getLevenshteinDistance(s1,s2));
+            Assert.assertEquals(pdiff, ldiff);
+        }
+    }
+
+
+    @Test
+    public void testLevenshteinIgnoreCase() {
+
+        RandomStringUtils rs = new RandomStringUtils();
+        Random randomGenerator = new Random();
+
+        for(int i = 0; i < 100; i++) {
+            int size0 =  randomGenerator.nextInt(25);
+            int size1 =  randomGenerator.nextInt(25);
+            String s1 = rs.randomAlphanumeric(size0);
+            String s2 = rs.randomAlphanumeric(size1);
+            Prex am = new Prex(s1);
+            double pdiff = am.evaluateCost(s2,true,false);
+            double ldiff = Math.abs(StringUtils.getLevenshteinDistance(s1.toUpperCase(),s2.toUpperCase()));
+            Assert.assertEquals(pdiff, ldiff);
+        }
+    }
 
 
 }
