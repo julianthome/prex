@@ -31,7 +31,7 @@ import java.util.Random;
 public class TestApproxiateMatcher {
 
     final static Logger logger = LoggerFactory.getLogger(TestApproxiateMatcher.class);
-    
+
     @Test
     public void testSimple() {
         Prex am = new Prex("gcg[abc]+");

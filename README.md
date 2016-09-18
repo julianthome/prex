@@ -20,35 +20,36 @@ of *s* with respect to
 *r* which requires approximately 15xSxR edges and SxR vertices
 where S denotes the length of *s* and R is the length of *r*.
 Given that data structure, their approach searches a minimal cost path
-in *e* with a worst time complexity of
+in *e* with a worst-case time complexity of
 O(SxR). The main strengths
 of Myers and Millers approach are the possibility to use real-valued costs for insertion,
-deletion and substitution, respectively, and its worst time complexity. The drawback, however,
-is that the edit-graph has to be created upfront
+deletion and substitution, respectively, and its worst-case time complexity. The drawback, however,
+is that the edit-graph has to be created upfront.
 
 Similar to Myers and Millers approach, one can also define real-valued cost
 for deletion, insertion and substitution in prex. However, prex is based on the branch and bounds method
 (+ extended list) and does not rely on a precomputed edit-graph. Because,
-prex is using branch and bounds, in theory it has the same worst time complexity as exhaustive
-search. However, our goal is to achieve a reasonable performance in practice by keeping
-the algorithm as simple as possible and by incorporating heuristics that improve its scalability.
+prex is using branch and bounds, in theory it has the same worst-case time complexity as exhaustive
+search. However, our goal is to keep
+the algorithm as simple as possible and to achieve a reasonable performance in practice by incorporating heuristics.
 
 # Usage
 
-prex can be used as a standalone command line tool and as a library
+prex can be used as a standalone command line tool and as a library.
 
 ## Standalone
 
 One could compile prex by running `mvn package` on the command line. The resulting `jar` archive
-can be called with `java -jar prex.jar` and provides the following command line options
+can be called with `java -jar prex.jar` and provides the following command line options:
 
 | Option               | Description                                         |
 |----------------------|:----------------------------------------------------|
-| -c,--cost \<cost\>   |cost values \<insertion\> \<substitution\> \<deletion\>| |                      |as  double                                           |
+| -c,--cost &lt;cost&gt;   |cost values &lt;insertion&gt; &lt;substitution&gt; &lt;deletion&gt;|                      
 | -h                   |  print this message                                 |
 | -ic,--ignore-case    |  ignore case of s when matching against r           |
-| -r,--regex \<regex\> |  regular expression                                 |
-| -s,--string \<string\> |  constant string                                  |
+| -n,--normalize       |      normalize cost to a value in range [0,1]       |
+| -r,--regex &lt;regex&gt; |  regular expression                                 |
+| -s,--string &lt;string&gt; |  constant string                                  |
 | -t,--print-tree      |  print branch and bounds edit tree                  |
 
 
@@ -61,13 +62,18 @@ is imported into your project:
 // invoke Prex constructor with regular expression definition,
 // r = gcg[abc]+
 // default costs for substitution, insertion and deletion are 1.0,
-// respectively -- however they can be changed
+// but they are modifiable
 Prex am = new Prex("gcg[abc]+");
-// get cost to make s = GCGa matching r = gcg[abc]+ and
-// ignore case
-System.out.println(am.evaluateCost("GCGa", true));
-// do the same as before, but do not ignore case
-System.out.println(am.evaluateCost("GCGa", false));
+// get cost to make s = GCGa matching r = gcg[abc]+
+// ignore case and return a value in range [0,1]
+System.out.println(am.evaluateCost("GCGa", true, true));
+// get cost to make s = GCGa matching r = gcg[abc]+
+// do not ignore case and return a value in range [0,1]
+System.out.println("GCGa", false, true));
+// ignore case and do not normalize
+System.out.println(am.evaluateCost("GCGa", true, false));
+// do not ignore case and do not normalize
+System.out.println(am.evaluateCost("GCGa", false, false));
 ```
 
 The results of the invocations above look as follows:
@@ -75,12 +81,12 @@ The results of the invocations above look as follows:
 ```bash
 0.0
 0.75
+0.0
+3.0
 ```
 
 Please have a look at the test cases and constructors provided by the
 `Prex` Java class to get additional information about the usage of prex.
-
-
 
 # Licence
 Licensed under the EUPL, Version 1.1 or – as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "Licence"); You may not use this work except in compliance with the Licence. You may obtain a copy of the Licence at: https://joinup.ec.europa.eu/sites/default/files/eupl1.1.-licence-en_0.pdf
