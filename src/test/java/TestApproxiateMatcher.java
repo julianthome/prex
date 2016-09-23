@@ -17,6 +17,8 @@
 * limitations under the Licence.
 */
 
+import dk.brics.automaton.Automaton;
+import dk.brics.automaton.RegExp;
 import junit.framework.Assert;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,12 +27,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snt.prex.Prex;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 
 public class TestApproxiateMatcher {
 
     final static Logger logger = LoggerFactory.getLogger(TestApproxiateMatcher.class);
+
+    private static String genRandString() {
+        RandomStringUtils rs = new RandomStringUtils();
+        Random randomGenerator = new Random();
+        int size0 = randomGenerator.nextInt(25);
+        return rs.randomAlphanumeric(size0);
+    }
+
 
     @Test
     public void testSimple() {
@@ -45,14 +57,10 @@ public class TestApproxiateMatcher {
     @Test
     public void testLevenshtein() {
 
-        RandomStringUtils rs = new RandomStringUtils();
-        Random randomGenerator = new Random();
 
         for(int i = 0; i < 100; i++) {
-            int size0 =  randomGenerator.nextInt(25);
-            int size1 =  randomGenerator.nextInt(25);
-            String s1 = rs.randomAlphanumeric(size0);
-            String s2 = rs.randomAlphanumeric(size1);
+            String s1 = genRandString();
+            String s2 = genRandString();
             Prex am = new Prex(s1);
             double pdiff = am.evaluateCost(s2,false,false);
             double ldiff = Math.abs(StringUtils.getLevenshteinDistance(s1,s2));
@@ -64,18 +72,47 @@ public class TestApproxiateMatcher {
     @Test
     public void testLevenshteinIgnoreCase() {
 
-        RandomStringUtils rs = new RandomStringUtils();
-        Random randomGenerator = new Random();
-
         for(int i = 0; i < 100; i++) {
-            int size0 =  randomGenerator.nextInt(25);
-            int size1 =  randomGenerator.nextInt(25);
-            String s1 = rs.randomAlphanumeric(size0);
-            String s2 = rs.randomAlphanumeric(size1);
+            String s1 = genRandString();
+            String s2 = genRandString();
             Prex am = new Prex(s1);
             double pdiff = am.evaluateCost(s2,true,false);
             double ldiff = Math.abs(StringUtils.getLevenshteinDistance(s1.toUpperCase(),s2.toUpperCase()));
             Assert.assertEquals(pdiff, ldiff);
+        }
+    }
+
+    @Test
+    public void testRandRegExp() {
+
+        for(int runs = 0; runs < 20; runs ++ ) {
+            Automaton a = new Automaton();
+            Set<String> finiteStringSet = new HashSet<String>();
+
+            for (int i = 0; i < 10; i++) {
+                String s = genRandString();
+                finiteStringSet.add(s);
+                Automaton sa = new RegExp(s).toAutomaton();
+                a = a.union(sa);
+            }
+
+            String input = genRandString();
+            String mins = finiteStringSet.iterator().next();
+
+            double min = (double) Math.abs(StringUtils.getLevenshteinDistance(input, finiteStringSet.iterator().next()));
+            // find min levenshtein distance
+            for (String fs : finiteStringSet) {
+                int ld = Math.abs(StringUtils.getLevenshteinDistance(input, fs));
+                if (ld < min) {
+                    min = ld;
+                    mins = fs;
+                }
+            }
+
+            //logger.info("Min ld is: " + min + " input:" + input + " " + mins);
+            Prex am = new Prex(a, 1.0, 1.0, 1.0);
+            double cost = am.evaluateCost(input, false, false);
+            Assert.assertEquals(cost, min);
         }
     }
 
