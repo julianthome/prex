@@ -109,10 +109,10 @@ public class TestApproxiateMatcher {
                 }
             }
 
-            //logger.info("Min ld is: " + min + " input:" + input + " " + mins);
+            logger.info("Min ld is: " + min + " input:" + input + " " + mins);
             Prex am = new Prex(a, 1.0, 1.0, 1.0);
             double cost = am.evaluateCost(input, false, false);
-            Assert.assertEquals(cost, min);
+            Assert.assertTrue(cost == min);
         }
     }
 
