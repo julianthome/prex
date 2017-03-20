@@ -69,8 +69,11 @@ public class Prex {
     public Prex(Automaton a, double icost, double scost, double dcost) {
         Automaton ch = a;
         AutomatonGraph g = GraphGenerator.getInstance().buildGraphFromAutomaton(ch);
-        this.eg = GraphGenerator.getInstance().buildEditGraph(g);
+        eg = GraphGenerator.getInstance().buildEditGraph(g);
         this.a = a;
+
+        LOGGER.debug(eg.toString());
+
         cost[INSIDX] = icost;
         cost[SUBIDX] = scost;
         cost[DELIDX] = dcost;
@@ -242,14 +245,14 @@ public class Prex {
         Set<AutomatonEdge> out = null;
 
         if (!lengthok) {
-            out = this.eg.getOutgoingEdgesOfKind(ancestor.getAutomatonNode(), AutomatonEdge.EdgeKind.INS);
+            out = eg.getOutgoingEdgesOfKind(ancestor.getAutomatonNode(), AutomatonEdge.EdgeKind.INS);
 
             if (out == null || out.size() == 0) {
                 ancestor.setState(EditNode.State.NOT_EXTENDABLE);
             }
         } else {
             tocheck = s.charAt(ancestor.getPos());
-            out = this.eg.outgoingEdgesOf(ancestor.getAutomatonNode());
+            out = eg.outgoingEdgesOf(ancestor.getAutomatonNode());
         }
 
 
@@ -322,12 +325,12 @@ public class Prex {
         this.step = 0;
         EditTree et = new EditTree();
 
-        EditNode start = new EditNode(this.eg.getStart(), 'S', 0, 0);
+        EditNode start = new EditNode(eg.getStart(), 'S', 0, 0);
 
         et.addVertex(start);
 
         // heuristic to initialize global minimum
-        double globalMin = Math.max(this.eg.vertexSet().size() + 1, s.length());
+        double globalMin = Math.max(eg.vertexSet().size() + 1, s.length());
 
 
         //LOGGER.info("GLOBAL MIN " + globalMin);

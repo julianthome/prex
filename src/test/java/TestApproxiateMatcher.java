@@ -26,9 +26,9 @@
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.RegExp;
-import junit.framework.Assert;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +71,7 @@ public class TestApproxiateMatcher {
             Prex am = new Prex(s1);
             double pdiff = am.evaluateCost(s2, false, false);
             double ldiff = Math.abs(StringUtils.getLevenshteinDistance(s1, s2));
-            Assert.assertEquals(pdiff, ldiff);
+            Assert.assertEquals(pdiff, ldiff,0);
         }
     }
 
@@ -85,7 +85,7 @@ public class TestApproxiateMatcher {
             Prex am = new Prex(s1);
             double pdiff = am.evaluateCost(s2, true, false);
             double ldiff = Math.abs(StringUtils.getLevenshteinDistance(s1.toUpperCase(), s2.toUpperCase()));
-            Assert.assertEquals(pdiff, ldiff);
+            Assert.assertEquals(pdiff, ldiff,0);
         }
     }
 
