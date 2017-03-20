@@ -6,11 +6,10 @@ how far a string *s* is from matching a regular expression *r*,
 string *s'* is acceptable by *r*.
 
 # Status
-[![Build Status](https://travis-ci.org/julianthome/prex.svg?branch=master)](https://travis-ci.org/julianthome/prex.svg?branch=master)  [![codecov](https://codecov.io/gh/julianthome/prex/branch/master/graph/badge.svg)](https://codecov.io/gh/julianthome/prex)
+[![Build Status](https://travis-ci.org/julianthome/prex.svg?branch=master)](https://travis-ci.org/julianthome/prex.svg?branch=master)  [![codecov](https://codecov.io/gh/julianthome/prex/branch/master/graph/badge.svg)](https://codecov.io/gh/julianthome/prex) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.julianthome/prex/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.julianthome/prex/badge.svg)  [![Javadoc](https://javadoc-emblem.rhcloud.com/doc/com.github.julianthome/prex/badge.svg)](http://www.javadoc.io/doc/com.github.julianthome/prex) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Language](http://img.shields.io/badge/language-java-brightgreen.svg)](https://www.java.com/)
 
 
 # Approach
-
 The prex algorithm is inspired by the [work of Myers and
 Millers](http://www.cs.mun.ca/~harold/Courses/Old/Ling6800.W06/Diary/reg.aprox.pdf)
 who provide an algorithm for solving the approximate regular
