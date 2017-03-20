@@ -1,38 +1,48 @@
-/*
-* prex - approximate regular expression matching
-*
-* Copyright 2016, Julian Thomé <julian.thome@uni.lu>
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved by
-* the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence. You may
-* obtain a copy of the Licence at:
-*
-* https://joinup.ec.europa.eu/sites/default/files/eupl1.1.-licence-en_0.pdf
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the Licence is distributed on an "AS IS" basis, WITHOUT
-* WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and
-* limitations under the Licence.
-*/
+/**
+ * prex - approximate regular expression matching
+ * 
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2016 Julian Thome <julian.thome.de@gmail.com>
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ **/
 
 package org.snt.prex.egraph;
 
-import org.jgrapht.EdgeFactory;
+import org.jgrapht.graph.DirectedPseudograph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class AutomatonGraph extends AbstractGraph implements Cloneable {
+public class AutomatonGraph extends DirectedPseudograph<AutomatonNode, AutomatonEdge>
+        implements
+        Cloneable {
 
-    final static Logger logger = LoggerFactory.getLogger(AutomatonGraph.class);
-
-
-    protected EdgeFactory<AutomatonNode,AutomatonEdge> SDGFactory;
+    final static Logger LOGGER = LoggerFactory.getLogger(AutomatonGraph.class);
 
     private AutomatonNode start = null;
+
+    public AutomatonGraph() {
+        super(AutomatonEdge.class);
+    }
 
     public AutomatonNode getStart() {
         return start;
@@ -47,7 +57,7 @@ public class AutomatonGraph extends AbstractGraph implements Cloneable {
 
         Set<AutomatonEdge> ret = new HashSet<AutomatonEdge>();
 
-        if(this.incomingEdgesOf(n) != null) {
+        if (this.incomingEdgesOf(n) != null) {
             for (AutomatonEdge e : this.outgoingEdgesOf(n)) {
                 if (e.getKind() == k) {
                     ret.add(e);
@@ -62,7 +72,7 @@ public class AutomatonGraph extends AbstractGraph implements Cloneable {
 
         Set<AutomatonEdge> ret = new HashSet<AutomatonEdge>();
 
-        if(this.outgoingEdgesOf(n) != null) {
+        if (this.outgoingEdgesOf(n) != null) {
             for (AutomatonEdge e : this.outgoingEdgesOf(n)) {
                 if (e.getKind() == k) {
                     ret.add(e);
@@ -76,8 +86,8 @@ public class AutomatonGraph extends AbstractGraph implements Cloneable {
     public Set<AutomatonNode> getAcceptingStates() {
         Set<AutomatonNode> ret = new HashSet<AutomatonNode>();
 
-        for(AutomatonNode n : vertexSet()) {
-            if(n.getKind() == AutomatonNode.NodeKind.ACCEPT) {
+        for (AutomatonNode n : vertexSet()) {
+            if (n.getKind() == AutomatonNode.NodeKind.ACCEPT) {
                 ret.add(n);
             }
         }
@@ -94,9 +104,10 @@ public class AutomatonGraph extends AbstractGraph implements Cloneable {
         super.addVertex(src);
         super.addVertex(dst);
 
-        super.addEdge(src,dst, e);
+        super.addEdge(src, dst, e);
 
     }
+
     @Override
     public String toString() {
 
@@ -118,13 +129,13 @@ public class AutomatonGraph extends AbstractGraph implements Cloneable {
         }
 
 
-        for (AutomatonEdge e : this.edgeSet())  {
+        for (AutomatonEdge e : this.edgeSet()) {
 
             AutomatonNode src = e.getSource();
             AutomatonNode dst = e.getTarget();
 
             String label = "";
-            switch(e.getKind()){
+            switch (e.getKind()) {
 
                 case NORMAL:
                     label = " [label=\"" + e.toString() + "\",color=black];\n";
@@ -167,66 +178,33 @@ public class AutomatonGraph extends AbstractGraph implements Cloneable {
     }
 
     public void addAllEdges(Collection<AutomatonEdge> edges) {
-        for(AutomatonEdge e : edges) {
+        for (AutomatonEdge e : edges) {
             addEdge(e);
         }
     }
 
     public void addAllVertices(Collection<AutomatonNode> nodes) {
-        for(AutomatonNode n : nodes) {
+        for (AutomatonNode n : nodes) {
             addVertex(n);
         }
     }
 
-    @Override
-    public EdgeFactory<AutomatonNode,AutomatonEdge> getEdgeFactory() {
-        if (SDGFactory == null)
-            SDGFactory = new EdgeFact();
-        return SDGFactory;
-    }
-
-    /**
-     * Replaces the edge factory.
-     */
-    public void setEdgeFactory(EdgeFactory<AutomatonNode,AutomatonEdge> fac) {
-        SDGFactory = fac;
-    }
-
-
-
-    public AutomatonGraph subgraph(Collection<AutomatonNode> vertices) {
-        AutomatonGraph g = new AutomatonGraph();
-
-        for (AutomatonNode n : vertices) {
-            g.addVertex(n);
-        }
-
-        for (AutomatonNode n : vertices) {
-            for (AutomatonEdge e : outgoingEdgesOf(n)) {
-                if (vertices.contains(e.getTarget())) {
-                    g.addEdge(e);
-                }
-            }
-        }
-
-        return g;
-    }
 
     @Override
     public AutomatonGraph clone() {
         AutomatonGraph g = new AutomatonGraph();
 
-        Map<Integer, AutomatonNode> nlookup = new HashMap<Integer,AutomatonNode>();
+        Map<Integer, AutomatonNode> nlookup = new HashMap<Integer, AutomatonNode>();
 
         for (AutomatonNode n : this.vertexSet()) {
             AutomatonNode ncp = n.clone();
 
-            //logger.info("put " + n.getId());
-            nlookup.put(n.getId(),ncp);
+            //LOGGER.info("put " + n.getId());
+            nlookup.put(n.getId(), ncp);
             g.addVertex(ncp);
 
 
-            if(this.getStart().equals(n)) {
+            if (this.getStart().equals(n)) {
                 //g.addVertex(ncp);
                 g.setStart(ncp);
             }
@@ -240,16 +218,16 @@ public class AutomatonGraph extends AbstractGraph implements Cloneable {
             AutomatonNode src = nlookup.get(e.getSource().getId());
             AutomatonNode dst = nlookup.get(e.getTarget().getId());
 
-            //logger.info(ecp.toString());
+            //LOGGER.info(ecp.toString());
 
 
-            assert(src != null);
-            assert(dst != null);
+            assert (src != null);
+            assert (dst != null);
 
             ecp.setSrc(src);
             ecp.setDest(dst);
 
-            g.addEdge(src,dst, ecp);
+            g.addEdge(src, dst, ecp);
         }
 
         return g;

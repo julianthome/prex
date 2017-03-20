@@ -1,22 +1,28 @@
-/*
-* prex - approximate regular expression matching
-*
-* Copyright 2016, Julian Thomé <julian.thome@uni.lu>
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved by
-* the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence. You may
-* obtain a copy of the Licence at:
-*
-* https://joinup.ec.europa.eu/sites/default/files/eupl1.1.-licence-en_0.pdf
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the Licence is distributed on an "AS IS" basis, WITHOUT
-* WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and
-* limitations under the Licence.
-*/
-
+/**
+ * prex - approximate regular expression matching
+ * 
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2016 Julian Thome <julian.thome.de@gmail.com>
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ **/
 package org.snt.prex.egraph;
 
 import dk.brics.automaton.Automaton;
@@ -31,7 +37,7 @@ import java.util.*;
 public class GraphGenerator {
 
 
-    final static Logger logger = LoggerFactory.getLogger(GraphGenerator.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(GraphGenerator.class);
 
     private Map<State, AutomatonNode> nlookup = null;
     private int timer;
@@ -53,14 +59,13 @@ public class GraphGenerator {
     }
 
 
-
     public AutomatonGraph buildEditGraph(AutomatonGraph g) {
 
         AutomatonGraph cp = g.clone();
 
-        //logger.info("HH " + cp.toString());
+        //LOGGER.info("HH " + cp.toString());
 
-        for(AutomatonNode v : cp.vertexSet()) {
+        for (AutomatonNode v : cp.vertexSet()) {
 
             Set<AutomatonEdge> toadd = new HashSet<AutomatonEdge>();
 
@@ -70,9 +75,9 @@ public class GraphGenerator {
             toadd.add(del);
             //toadd.add(ins);
 
-            for(AutomatonEdge out : cp.outgoingEdgesOf(v)){
+            for (AutomatonEdge out : cp.outgoingEdgesOf(v)) {
 
-                if(out.getKind() == AutomatonEdge.EdgeKind.DEL || out.getKind() == AutomatonEdge.EdgeKind.INS ||
+                if (out.getKind() == AutomatonEdge.EdgeKind.DEL || out.getKind() == AutomatonEdge.EdgeKind.INS ||
                         out.getKind() == AutomatonEdge.EdgeKind.SUBST)
                     continue;
 
@@ -95,7 +100,7 @@ public class GraphGenerator {
 
         g = new AutomatonGraph();
 
-        nlookup = new HashMap<State, AutomatonNode>();
+        nlookup = new HashMap<>();
 
         timer = 1;
 
@@ -103,7 +108,7 @@ public class GraphGenerator {
 
             AutomatonNode.NodeKind kind = AutomatonNode.NodeKind.NORMAL;
 
-            if(s.isAccept()) {
+            if (s.isAccept()) {
                 kind = AutomatonNode.NodeKind.ACCEPT;
             }
 
@@ -111,7 +116,7 @@ public class GraphGenerator {
             AutomatonNode n = new AutomatonNode(kind, s, 0);
 
 
-            if(a.getInitialState().equals(s)) {
+            if (a.getInitialState().equals(s)) {
                 g.setStart(n);
             }
 
@@ -121,13 +126,12 @@ public class GraphGenerator {
 
         dfsVisit(g.getStart());
 
-        for(AutomatonEdge e : g.edgeSet()) {
+        for (AutomatonEdge e : g.edgeSet()) {
             e.setLevel(e.getSource().getLevels() + 1);
         }
 
         return g;
     }
-
 
 
     public Set<Set<AutomatonNode>> doGetComponents(AutomatonGraph g) {
@@ -136,7 +140,7 @@ public class GraphGenerator {
         this.low = new HashMap<AutomatonNode, Integer>();
         this.nstack = new Stack<AutomatonNode>();
 
-        for(AutomatonNode n : g.vertexSet()) {
+        for (AutomatonNode n : g.vertexSet()) {
             getComponents(g, n);
         }
 
@@ -144,7 +148,7 @@ public class GraphGenerator {
     }
 
     public void getComponents(AutomatonGraph g, AutomatonNode n) {
-        if(this.low.containsKey(n))
+        if (this.low.containsKey(n))
             return;
 
         int num = this.low.size();
@@ -155,29 +159,28 @@ public class GraphGenerator {
 
         nstack.push(n);
 
-        for(AutomatonEdge succ : g.outgoingEdgesOf(n)) {
+        for (AutomatonEdge succ : g.outgoingEdgesOf(n)) {
             getComponents(g, succ.getTarget());
             this.low.put(n, Math.min(this.low.get(n), this.low.get(succ.getTarget())));
         }
 
-        if(num == this.low.get(n)) {
+        if (num == this.low.get(n)) {
 
             Set<AutomatonNode> comp = new LinkedHashSet<AutomatonNode>();
-            while(true) {
+            while (true) {
                 AutomatonNode sn = this.nstack.pop();
                 comp.add(sn);
-                if(this.nstack.size() == spos) {
+                if (this.nstack.size() == spos) {
                     break;
                 }
             }
 
-            for(AutomatonNode c : comp) {
-                this.low.put(c,g.vertexSet().size());
+            for (AutomatonNode c : comp) {
+                this.low.put(c, g.vertexSet().size());
             }
             this.components.add(comp);
         }
     }
-
 
 
     public void dfsVisit(AutomatonNode srcnode) {
@@ -191,17 +194,17 @@ public class GraphGenerator {
         State srcstate = srcnode.getState();
         Set<Transition> trans = srcstate.getTransitions();
 
-        //logger.info("SRCNODE " + srcnode + " " + trans.size());
+        //LOGGER.info("SRCNODE " + srcnode + " " + trans.size());
         for (Transition t : trans) {
 
             AutomatonNode destnode = nlookup.get(t.getDest());
 
-            //logger.info("ID " + srcnode + " " + destnode);
-            //logger.info("DTIME " + srcnode.getD() + " " + destnode.getD());
-            //logger.info("COLOR " + srcnode.getColor() + " " + destnode.getColor());
+            //LOGGER.info("ID " + srcnode + " " + destnode);
+            //LOGGER.info("DTIME " + srcnode.getD() + " " + destnode.getD());
+            //LOGGER.info("COLOR " + srcnode.getColor() + " " + destnode.getColor());
 
             if (destnode.getColor() == AutomatonNode.Color.WHITE) {
-                //logger.info("WHITE " + srcnode + " " + destnode);
+                //LOGGER.info("WHITE " + srcnode + " " + destnode);
 
                 destnode.setLevel(srcnode.getLevels() + 1);
                 AutomatonEdge e = new AutomatonEdge(AutomatonEdge.EdgeKind.TREE, srcnode, destnode, t);
@@ -213,7 +216,7 @@ public class GraphGenerator {
             } else if (destnode.getColor() == AutomatonNode.Color.BLACK) {
 
                 AutomatonEdge.EdgeKind k = AutomatonEdge.EdgeKind.TREE;
-                //logger.info("SRCNODE " + srcnode.getD() + " Destnode" + destnode.getD());
+                //LOGGER.info("SRCNODE " + srcnode.getD() + " Destnode" + destnode.getD());
                 if (srcnode.getD() < destnode.getD()) {
                     k = AutomatonEdge.EdgeKind.FWD;
                 } else if (srcnode.getD() > destnode.getD()) {
@@ -227,11 +230,10 @@ public class GraphGenerator {
         }
 
         srcnode.setColor(AutomatonNode.Color.BLACK);
-        //logger.info("srcnode color black :" + srcnode);
+        //LOGGER.info("srcnode color black :" + srcnode);
         this.timer++;
         srcnode.setF(this.timer);
     }
-
 
 
 }

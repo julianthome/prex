@@ -1,22 +1,28 @@
-/*
-* prex - approximate regular expression matching
-*
-* Copyright 2016, Julian Thomé <julian.thome@uni.lu>
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved by
-* the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence. You may
-* obtain a copy of the Licence at:
-*
-* https://joinup.ec.europa.eu/sites/default/files/eupl1.1.-licence-en_0.pdf
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the Licence is distributed on an "AS IS" basis, WITHOUT
-* WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and
-* limitations under the Licence.
-*/
-
+/**
+ * prex - approximate regular expression matching
+ * 
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2016 Julian Thome <julian.thome.de@gmail.com>
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ **/
 package org.snt.prex;
 
 import dk.brics.automaton.Automaton;
@@ -32,21 +38,18 @@ import org.snt.prex.etree.EditEdge;
 import org.snt.prex.etree.EditNode;
 import org.snt.prex.etree.EditTree;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
 public class Prex {
 
-    final static Logger logger = LoggerFactory.getLogger(Prex.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(Prex.class);
 
     private AutomatonGraph eg = null;
     private Automaton a = null;
 
     // step size is used for normalization
     private double step = 0;
-
-    private HashSet<EditNode> extendedList = null;
 
     // used for defining cost as double values
     private static int INSIDX = 0;
@@ -67,7 +70,6 @@ public class Prex {
         Automaton ch = a;
         AutomatonGraph g = GraphGenerator.getInstance().buildGraphFromAutomaton(ch);
         this.eg = GraphGenerator.getInstance().buildEditGraph(g);
-        this.extendedList = new HashSet<EditNode>();
         this.a = a;
         cost[INSIDX] = icost;
         cost[SUBIDX] = scost;
@@ -222,18 +224,18 @@ public class Prex {
 
 
     public void extendsNode(EditTree et, String s, EditNode ancestor, boolean ignoreCase) {
-        //logger.info("ANCESTPOR " + ancestor.toString());
+        //LOGGER.info("ANCESTPOR " + ancestor.toString());
 
 
         boolean lengthok = false;
         char tocheck = '%';
 
-        //logger.info("NXTPOS " + nxtPos);
+        //LOGGER.info("NXTPOS " + nxtPos);
         if (ancestor.getPos() < s.length()) {
-            //logger.info("LENOK");
+            //LOGGER.info("LENOK");
             lengthok = true;
         } else {
-            //logger.info("LENNOK");
+            //LOGGER.info("LENNOK");
             lengthok = false;
         }
 
@@ -252,7 +254,7 @@ public class Prex {
 
 
         for (AutomatonEdge e : out) {
-            //logger.info("EDGE " + e.toString());
+            //LOGGER.info("EDGE " + e.toString());
             int apos = 0;
             double cost = getCostFromEdgeKind(e.getKind());
 
@@ -271,14 +273,14 @@ public class Prex {
                 char cmin = e.getTrans().getMin();
                 char cmax = e.getTrans().getMax();
                 // NON-Match
-                if(ignoreCase) {
+                if (ignoreCase) {
                     tocheck = Character.toUpperCase(tocheck);
-                    cmin = (char)Math.min(Character.toUpperCase(cmin), Character.toUpperCase(cmax));
-                    cmax = (char)Math.max(Character.toUpperCase(cmin), Character.toUpperCase(cmax));
+                    cmin = (char) Math.min(Character.toUpperCase(cmin), Character.toUpperCase(cmax));
+                    cmax = (char) Math.max(Character.toUpperCase(cmin), Character.toUpperCase(cmax));
                 }
 
                 if (!(cmin <= tocheck && cmax >= tocheck)) {
-                    //logger.info("TOCHECK " + tocheck + " vs " + e.getTrans().getMin());
+                    //LOGGER.info("TOCHECK " + tocheck + " vs " + e.getTrans().getMin());
                     continue;
                 } else {
                     cost = 0;
@@ -313,7 +315,7 @@ public class Prex {
 
         // special case - if automaton is empty string
         // we can just return the lenght of s as cost
-        if(this.a.isEmptyString()) {
+        if (this.a.isEmptyString()) {
             return s.length();
         }
 
@@ -328,7 +330,7 @@ public class Prex {
         double globalMin = Math.max(this.eg.vertexSet().size() + 1, s.length());
 
 
-        //logger.info("GLOBAL MIN " + globalMin);
+        //LOGGER.info("GLOBAL MIN " + globalMin);
 
 
         LinkedList<EditNode> leafs = et.getExtendableLeafNodes();
@@ -337,24 +339,26 @@ public class Prex {
         while (!leafs.isEmpty()) {
 
 
-            EditNode ancestor = leafs.pop();
+            EditNode extendableLeaf = leafs.pop();
 
-            if (ancestor.getAutomatonNode().getKind() == AutomatonNode.NodeKind.ACCEPT &&
-                    ancestor.getPos() > s.length() - 1) {
-                globalMin = globalMin < 0 ? ancestor.getSum() : Math.min(globalMin, ancestor.getSum());
+            if (extendableLeaf.getAutomatonNode().getKind() == AutomatonNode.NodeKind.ACCEPT &&
+                    extendableLeaf.getPos() > s.length() - 1) {
+                globalMin = globalMin < 0 ? extendableLeaf.getSum() : Math.min(globalMin, extendableLeaf.getSum());
             }
 
 
-            if (et.isInExtendedList(ancestor) && !leafs.isEmpty()) {
-                ancestor.setState(EditNode.State.NOT_EXTENDABLE);
+            if (et.isInExtendedList(extendableLeaf) && !leafs.isEmpty()) {
+                extendableLeaf.setState(EditNode.State.NOT_EXTENDABLE);
+                continue;
             }
 
-            if (ancestor.getSum() >= globalMin) {
-                ancestor.setState(EditNode.State.NOT_EXTENDABLE);
+            if (extendableLeaf.getSum() >= globalMin) {
+                extendableLeaf.setState(EditNode.State.NOT_EXTENDABLE);
+                continue;
             }
 
-            if (ancestor.isExtendable()) {
-                extendsNode(et, s, ancestor, ignoreCase);
+            if (extendableLeaf.isExtendable()) {
+                extendsNode(et, s, extendableLeaf, ignoreCase);
             }
 
             leafs = et.getMinLeafs(globalMin);
@@ -373,8 +377,8 @@ public class Prex {
             System.out.println(et.toString());
         }
 
-        if(normalize) {
-            cost = (double)cost/(double)this.step;
+        if (normalize) {
+            cost = (double) cost / (double) this.step;
         }
 
         return cost;

@@ -1,21 +1,28 @@
-/*
-* prex - approximate regular expression matching
-*
-* Copyright 2016, Julian Thomé <julian.thome@uni.lu>
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved by
-* the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence. You may
-* obtain a copy of the Licence at:
-*
-* https://joinup.ec.europa.eu/sites/default/files/eupl1.1.-licence-en_0.pdf
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the Licence is distributed on an "AS IS" basis, WITHOUT
-* WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and
-* limitations under the Licence.
-*/
+/**
+ * prex - approximate regular expression matching
+ * 
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2016 Julian Thome <julian.thome.de@gmail.com>
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ **/
 
 package org.snt.prex.etree;
 
@@ -40,8 +47,8 @@ public class EditTree extends DirectedAcyclicGraph<EditNode, EditEdge> {
 
         LinkedList<EditNode> leafs = new LinkedList<EditNode>();
 
-        for(EditNode n : this.vertexSet()) {
-            if(this.outDegreeOf(n) == 0) {
+        for (EditNode n : this.vertexSet()) {
+            if (this.outDegreeOf(n) == 0) {
                 leafs.add(n);
             }
 
@@ -54,8 +61,8 @@ public class EditTree extends DirectedAcyclicGraph<EditNode, EditEdge> {
 
         LinkedList<EditNode> leafs = new LinkedList<EditNode>();
 
-        for(EditNode n : this.vertexSet()) {
-            if(this.outDegreeOf(n) == 0 && n.isExtendable()) {
+        for (EditNode n : this.vertexSet()) {
+            if (this.outDegreeOf(n) == 0 && n.isExtendable()) {
                 leafs.add(n);
             }
 
@@ -67,12 +74,12 @@ public class EditTree extends DirectedAcyclicGraph<EditNode, EditEdge> {
 
     public boolean isInExtendedList(EditNode n) {
 
-        for(EditNode v : this.vertexSet()) {
+        for (EditNode v : this.vertexSet()) {
 
-            if(v.equals(n))
+            if (v.equals(n))
                 continue;
 
-            if(v.getPos() == n.getPos() && n.getAutomatonNode().equals(v.getAutomatonNode())
+            if (v.getPos() == n.getPos() && n.getAutomatonNode().equals(v.getAutomatonNode())
                     && this.outDegreeOf(v) > 0)
                 return true;
         }
@@ -83,35 +90,35 @@ public class EditTree extends DirectedAcyclicGraph<EditNode, EditEdge> {
 
     public LinkedList<EditNode> getMinLeafs(double globalMin) {
 
-        assert(!this.vertexSet().isEmpty());
+        assert (!this.vertexSet().isEmpty());
 
         LinkedList<EditNode> ret = new LinkedList<EditNode>();
 
         LinkedList<EditNode> leafs = getExtendableLeafNodes();
 
-        if(leafs == null || leafs.size() == 0){
+        if (leafs == null || leafs.size() == 0) {
             return ret;
         }
 
         double mincost = leafs.iterator().next().getSum();
 
-        for(EditNode n : leafs) {
+        for (EditNode n : leafs) {
 
             //logger.info("SUM " + n.getSum());
             mincost = Math.min(n.getSum(), mincost);
 
-            if(globalMin >= 0) {
+            if (globalMin >= 0) {
                 mincost = Math.min(globalMin, mincost);
             }
         }
 
         //logger.info("MINCOST " + mincost);
 
-        for(EditNode n : leafs) {
+        for (EditNode n : leafs) {
 
             //logger.info("SUM " + n.getSum() + " < " + mincost);
 
-            if(n.getSum() <= mincost) {
+            if (n.getSum() <= mincost) {
                 //logger.info("ADD " + n.toString());
                 ret.add(n);
             }
@@ -131,17 +138,17 @@ public class EditTree extends DirectedAcyclicGraph<EditNode, EditEdge> {
             String shape = "";
             String color = "";
 
-            if(!n.isExtendable()) {
+            if (!n.isExtendable()) {
                 color = "gray";
             }
 
-            if(n.getAutomatonNode().getKind() == AutomatonNode.NodeKind.ACCEPT) {
+            if (n.getAutomatonNode().getKind() == AutomatonNode.NodeKind.ACCEPT) {
                 color = "green";
             }
 
 
             sb.append("\t" + n.getName() + " [label=\"" + n.getLabel() + "\\npos:" + n.getPos() +
-                    "\\nsum:" + n.getSum()  + "\\nsteps:" + n.getSteps() + "\\nstate:" +
+                    "\\nsum:" + n.getSum() + "\\nsteps:" + n.getSteps() + "\\nstate:" +
                     n.getAutomatonNode().getId() + "\\nid:" + n.getId() + "\\n\",shape=\"" +
                     shape + "\", color=\"" + color + "\"];\n");
         }
@@ -153,7 +160,7 @@ public class EditTree extends DirectedAcyclicGraph<EditNode, EditEdge> {
             EditNode dst = e.getTarget();
 
             String ext = "";
-            if(e.getKind().isMatching())
+            if (e.getKind().isMatching())
                 ext = "MATCHING";
             else
                 ext = "" + e.getKind();

@@ -1,21 +1,28 @@
-/*
-* prex - approximate regular expression matching
-*
-* Copyright 2016, Julian Thomé <julian.thome@uni.lu>
-*
-* Licensed under the EUPL, Version 1.1 or – as soon they will be approved by
-* the European Commission - subsequent versions of the EUPL (the "Licence");
-* You may not use this work except in compliance with the Licence. You may
-* obtain a copy of the Licence at:
-*
-* https://joinup.ec.europa.eu/sites/default/files/eupl1.1.-licence-en_0.pdf
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the Licence is distributed on an "AS IS" basis, WITHOUT
-* WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and
-* limitations under the Licence.
-*/
+/**
+ * prex - approximate regular expression matching
+ *
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2016 Julian Thome <julian.thome.de@gmail.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ **/
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.RegExp;
@@ -34,12 +41,12 @@ import java.util.Set;
 
 public class TestApproxiateMatcher {
 
-    final static Logger logger = LoggerFactory.getLogger(TestApproxiateMatcher.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(TestApproxiateMatcher.class);
 
     private static String genRandString() {
         RandomStringUtils rs = new RandomStringUtils();
         Random randomGenerator = new Random();
-        int size0 = randomGenerator.nextInt(25);
+        int size0 = randomGenerator.nextInt(30) + 1;
         return rs.randomAlphanumeric(size0);
     }
 
@@ -58,12 +65,12 @@ public class TestApproxiateMatcher {
     public void testLevenshtein() {
 
 
-        for(int i = 0; i < 100; i++) {
+        for (int i = 0; i < 100; i++) {
             String s1 = genRandString();
             String s2 = genRandString();
             Prex am = new Prex(s1);
-            double pdiff = am.evaluateCost(s2,false,false);
-            double ldiff = Math.abs(StringUtils.getLevenshteinDistance(s1,s2));
+            double pdiff = am.evaluateCost(s2, false, false);
+            double ldiff = Math.abs(StringUtils.getLevenshteinDistance(s1, s2));
             Assert.assertEquals(pdiff, ldiff);
         }
     }
@@ -72,12 +79,12 @@ public class TestApproxiateMatcher {
     @Test
     public void testLevenshteinIgnoreCase() {
 
-        for(int i = 0; i < 100; i++) {
+        for (int i = 0; i < 100; i++) {
             String s1 = genRandString();
             String s2 = genRandString();
             Prex am = new Prex(s1);
-            double pdiff = am.evaluateCost(s2,true,false);
-            double ldiff = Math.abs(StringUtils.getLevenshteinDistance(s1.toUpperCase(),s2.toUpperCase()));
+            double pdiff = am.evaluateCost(s2, true, false);
+            double ldiff = Math.abs(StringUtils.getLevenshteinDistance(s1.toUpperCase(), s2.toUpperCase()));
             Assert.assertEquals(pdiff, ldiff);
         }
     }
@@ -85,7 +92,7 @@ public class TestApproxiateMatcher {
     @Test
     public void testRandRegExp() {
 
-        for(int runs = 0; runs < 20; runs ++ ) {
+        for (int runs = 0; runs < 20; runs++) {
             Automaton a = new Automaton();
             Set<String> finiteStringSet = new HashSet<String>();
 
@@ -109,13 +116,12 @@ public class TestApproxiateMatcher {
                 }
             }
 
-            logger.info("Min ld is: " + min + " input:" + input + " " + mins);
+            LOGGER.info("Min ld is: " + min + " input:" + input + " " + mins);
             Prex am = new Prex(a, 1.0, 1.0, 1.0);
             double cost = am.evaluateCost(input, false, false);
             Assert.assertTrue(cost == min);
         }
     }
-
 
 }
 
