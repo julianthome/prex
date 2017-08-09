@@ -34,7 +34,7 @@ the algorithm as simple as possible and to achieve a reasonable performance in p
 
 # Usage
 
-prex can be used as a standalone command line tool and as a library.
+prex can be used as a standalone command line tool or as a library.
 
 ## Standalone
 
