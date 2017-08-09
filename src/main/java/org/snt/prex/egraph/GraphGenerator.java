@@ -63,8 +63,6 @@ public class GraphGenerator {
 
         AutomatonGraph cp = g.clone();
 
-        //LOGGER.info("HH " + cp.toString());
-
         for (AutomatonNode v : cp.vertexSet()) {
 
             Set<AutomatonEdge> toadd = new HashSet<AutomatonEdge>();
@@ -104,6 +102,8 @@ public class GraphGenerator {
 
         timer = 1;
 
+        Map<State,Set<Transition>> trans = new HashMap<>();
+
         for (State s : a.getStates()) {
 
             AutomatonNode.NodeKind kind = AutomatonNode.NodeKind.NORMAL;
@@ -111,129 +111,30 @@ public class GraphGenerator {
             if (s.isAccept()) {
                 kind = AutomatonNode.NodeKind.ACCEPT;
             }
-
-
             AutomatonNode n = new AutomatonNode(kind, s, 0);
-
 
             if (a.getInitialState().equals(s)) {
                 g.setStart(n);
             }
 
             this.nlookup.put(s, n);
+
+            trans.put(s, s.getTransitions());
         }
 
+        for(Map.Entry<State,Set<Transition>> m : trans.entrySet()) {
+            for(Transition t : m.getValue()) {
+                AutomatonNode src = nlookup.get(m.getKey());
+                AutomatonNode dst = nlookup.get(t.getDest());
+                g.addEdge(new AutomatonEdge(AutomatonEdge.EdgeKind.MATCH,src, dst,t));
+            }
 
-        dfsVisit(g.getStart());
-
-        for (AutomatonEdge e : g.edgeSet()) {
-            e.setLevel(e.getSource().getLevels() + 1);
         }
 
         return g;
     }
 
 
-    public Set<Set<AutomatonNode>> doGetComponents(AutomatonGraph g) {
-
-        this.components = new HashSet<Set<AutomatonNode>>();
-        this.low = new HashMap<AutomatonNode, Integer>();
-        this.nstack = new Stack<AutomatonNode>();
-
-        for (AutomatonNode n : g.vertexSet()) {
-            getComponents(g, n);
-        }
-
-        return components;
-    }
-
-    public void getComponents(AutomatonGraph g, AutomatonNode n) {
-        if (this.low.containsKey(n))
-            return;
-
-        int num = this.low.size();
-
-        this.low.put(n, num);
-
-        int spos = this.nstack.size();
-
-        nstack.push(n);
-
-        for (AutomatonEdge succ : g.outgoingEdgesOf(n)) {
-            getComponents(g, succ.getTarget());
-            this.low.put(n, Math.min(this.low.get(n), this.low.get(succ.getTarget())));
-        }
-
-        if (num == this.low.get(n)) {
-
-            Set<AutomatonNode> comp = new LinkedHashSet<AutomatonNode>();
-            while (true) {
-                AutomatonNode sn = this.nstack.pop();
-                comp.add(sn);
-                if (this.nstack.size() == spos) {
-                    break;
-                }
-            }
-
-            for (AutomatonNode c : comp) {
-                this.low.put(c, g.vertexSet().size());
-            }
-            this.components.add(comp);
-        }
-    }
-
-
-    public void dfsVisit(AutomatonNode srcnode) {
-
-
-        this.timer++;
-
-        srcnode.setD(this.timer);
-        srcnode.setColor(AutomatonNode.Color.GRAY);
-
-        State srcstate = srcnode.getState();
-        Set<Transition> trans = srcstate.getTransitions();
-
-        //LOGGER.info("SRCNODE " + srcnode + " " + trans.size());
-        for (Transition t : trans) {
-
-            AutomatonNode destnode = nlookup.get(t.getDest());
-
-            //LOGGER.info("ID " + srcnode + " " + destnode);
-            //LOGGER.info("DTIME " + srcnode.getD() + " " + destnode.getD());
-            //LOGGER.info("COLOR " + srcnode.getColor() + " " + destnode.getColor());
-
-            if (destnode.getColor() == AutomatonNode.Color.WHITE) {
-                //LOGGER.info("WHITE " + srcnode + " " + destnode);
-
-                destnode.setLevel(srcnode.getLevels() + 1);
-                AutomatonEdge e = new AutomatonEdge(AutomatonEdge.EdgeKind.TREE, srcnode, destnode, t);
-                g.addEdge(e);
-                dfsVisit(destnode);
-            } else if (destnode.getColor() == AutomatonNode.Color.GRAY) {
-                AutomatonEdge e = new AutomatonEdge(AutomatonEdge.EdgeKind.BACK, srcnode, destnode, t);
-                g.addEdge(e);
-            } else if (destnode.getColor() == AutomatonNode.Color.BLACK) {
-
-                AutomatonEdge.EdgeKind k = AutomatonEdge.EdgeKind.TREE;
-                //LOGGER.info("SRCNODE " + srcnode.getD() + " Destnode" + destnode.getD());
-                if (srcnode.getD() < destnode.getD()) {
-                    k = AutomatonEdge.EdgeKind.FWD;
-                } else if (srcnode.getD() > destnode.getD()) {
-                    k = AutomatonEdge.EdgeKind.CROSS;
-                }
-
-                AutomatonEdge e = new AutomatonEdge(k, srcnode, destnode, t);
-                g.addEdge(e);
-            }
-
-        }
-
-        srcnode.setColor(AutomatonNode.Color.BLACK);
-        //LOGGER.info("srcnode color black :" + srcnode);
-        this.timer++;
-        srcnode.setF(this.timer);
-    }
 
 
 }

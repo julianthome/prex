@@ -26,28 +26,20 @@
 
 package org.snt.prex.egraph;
 
-
 import dk.brics.automaton.Transition;
 
 public class AutomatonEdge implements Cloneable {
-
 
     public enum EdgeKind {
         SUBST,
         INS,
         DEL,
-
-        NORMAL,
-        BACK,
-        FWD,
-        CROSS,
-        TREE;
+        MATCH;
 
         public boolean isMatching() {
-            return this == NORMAL || this == BACK || this == FWD || this == CROSS || this == TREE;
+            return this == MATCH;
         }
     }
-
 
     private Transition trans;
     private AutomatonNode src;
@@ -130,14 +122,6 @@ public class AutomatonEdge implements Cloneable {
         return e.getSource().equals(this.getSource()) && e.getTarget().equals(this.getTarget()) &&
                 e.getKind() == this.getKind();
 
-    }
-
-
-    @Override
-    public int hashCode() {
-        int hc = kind.hashCode();
-        hc = 37 * hc + (this.src != null ? src.hashCode() : 0);
-        return 37 * hc + (this.dest != null ? dest.hashCode() : 0);
     }
 
     @Override

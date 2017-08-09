@@ -137,19 +137,7 @@ public class AutomatonGraph extends DirectedPseudograph<AutomatonNode, Automaton
             String label = "";
             switch (e.getKind()) {
 
-                case NORMAL:
-                    label = " [label=\"" + e.toString() + "\",color=black];\n";
-                    break;
-                case BACK:
-                    label = " [label=\"" + e.toString() + "\",color=red];\n";
-                    break;
-                case FWD:
-                    label = " [label=\"" + e.toString() + "\",color=blue];\n";
-                    break;
-                case CROSS:
-                    label = " [label=\"" + e.toString() + "\",color=orange];\n";
-                    break;
-                case TREE:
+                case MATCH:
                     label = " [label=\"" + e.toString() + "\",color=green];\n";
                     break;
                 case SUBST:
@@ -163,10 +151,7 @@ public class AutomatonGraph extends DirectedPseudograph<AutomatonNode, Automaton
                     break;
 
             }
-
-
             sb.append("\t" + src.getName() + " -> " + dst.getName() + label);
-
         }
 
 
@@ -182,13 +167,6 @@ public class AutomatonGraph extends DirectedPseudograph<AutomatonNode, Automaton
             addEdge(e);
         }
     }
-
-    public void addAllVertices(Collection<AutomatonNode> nodes) {
-        for (AutomatonNode n : nodes) {
-            addVertex(n);
-        }
-    }
-
 
     @Override
     public AutomatonGraph clone() {

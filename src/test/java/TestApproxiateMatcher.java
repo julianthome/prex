@@ -52,12 +52,41 @@ public class TestApproxiateMatcher {
 
 
     @Test
-    public void testSimple() {
+    public void testSimple1() {
         Prex am = new Prex("gcg[abc]+");
         Assert.assertTrue(am.evaluateCost("GCGa", true, true) == 0);
         Assert.assertTrue(am.evaluateCost("GCGa", false, true) == 0.75);
         Assert.assertTrue(am.evaluateCost("GCGa", true, false) == 0);
         Assert.assertTrue(am.evaluateCost("GCGa", false, false) == 3);
+    }
+
+    @Test
+    public void testAllAccepting(){
+        Prex am = new Prex(".*3 rue des cerisiers.*");
+        Assert.assertTrue(am.evaluateCost("123 3 rue des cerisiers 456", true, true) == 0);
+        Assert.assertTrue(am.evaluateCost("world 3 rue des cerisiers hello", true, true) == 0);
+    }
+
+    @Test
+    public void testSimple2() {
+        Prex am = new Prex("[0-9]+ [Oo][Rr] 1=1");
+        LOGGER.info("++{}",am.evaluateCost("10 or 1",true,true));
+    }
+
+    @Test
+    public void testDistance() {
+
+        String s1 = "o AZ 1";
+        String s2 = "10 kr 1=o";
+        int dist = StringUtils.getLevenshteinDistance(s1, s2);
+
+        LOGGER.info("Dist {}", dist);
+
+        double d = dist/(1.0*Math.max(s1.length(),s2.length()));
+
+        LOGGER.info("D {}",d);
+
+
     }
 
 

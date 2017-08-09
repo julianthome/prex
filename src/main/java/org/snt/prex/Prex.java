@@ -64,6 +64,8 @@ public class Prex {
 
     public Prex(String s, double icost, double scost, double dcost) {
         this(new RegExp(s).toAutomaton(), icost, scost, dcost);
+
+        LOGGER.debug(a.toDot());
     }
 
     public Prex(Automaton a, double icost, double scost, double dcost) {
@@ -215,22 +217,18 @@ public class Prex {
                 return cost[INSIDX];
             case DEL:
                 return cost[DELIDX];
-            case NORMAL:
-            case BACK:
-            case FWD:
-            case CROSS:
-            case TREE:
+            case MATCH:
                 return 0.0;
         }
         return 0.0;
     }
 
 
-    public void extendsNode(EditTree et, String s, EditNode ancestor, boolean ignoreCase) {
+    public void extendNode(EditTree et, String s, EditNode ancestor, boolean ignoreCase) {
         //LOGGER.info("ANCESTPOR " + ancestor.toString());
 
 
-        boolean lengthok = false;
+        boolean lengthok;
         char tocheck = '%';
 
         //LOGGER.info("NXTPOS " + nxtPos);
@@ -242,7 +240,7 @@ public class Prex {
             lengthok = false;
         }
 
-        Set<AutomatonEdge> out = null;
+        Set<AutomatonEdge> out;
 
         if (!lengthok) {
             out = eg.getOutgoingEdgesOfKind(ancestor.getAutomatonNode(), AutomatonEdge.EdgeKind.INS);
@@ -257,8 +255,7 @@ public class Prex {
 
 
         for (AutomatonEdge e : out) {
-            //LOGGER.info("EDGE " + e.toString());
-            int apos = 0;
+            int apos;
             double cost = getCostFromEdgeKind(e.getKind());
 
 
@@ -282,11 +279,10 @@ public class Prex {
                     cmax = (char) Math.max(Character.toUpperCase(cmin), Character.toUpperCase(cmax));
                 }
 
-                if (!(cmin <= tocheck && cmax >= tocheck)) {
-                    //LOGGER.info("TOCHECK " + tocheck + " vs " + e.getTrans().getMin());
-                    continue;
-                } else {
+                if (tocheck >= cmin && tocheck <= cmax) {
                     cost = 0;
+                } else {
+                    continue;
                 }
             }
 
@@ -333,8 +329,6 @@ public class Prex {
         double globalMin = Math.max(eg.vertexSet().size() + 1, s.length());
 
 
-        //LOGGER.info("GLOBAL MIN " + globalMin);
-
 
         LinkedList<EditNode> leafs = et.getExtendableLeafNodes();
 
@@ -361,17 +355,17 @@ public class Prex {
             }
 
             if (extendableLeaf.isExtendable()) {
-                extendsNode(et, s, extendableLeaf, ignoreCase);
+                extendNode(et, s, extendableLeaf, ignoreCase);
             }
 
             leafs = et.getMinLeafs(globalMin);
         }
 
 
-        double cost = 0.0;
+        double cost;
 
         if (this.step != 0.0) {
-            cost = (double) globalMin;
+            cost = globalMin;
         } else {
             cost = 1.0;
         }
@@ -381,16 +375,13 @@ public class Prex {
         }
 
         if (normalize) {
-            cost = (double) cost / (double) this.step;
+            //cost = (double) cost / (double) this.step;
+            cost = cost/Math.max(s.length(), this.step);
         }
+
+        LOGGER.debug(et.toString());
 
         return cost;
     }
-
-
-    public double getStep() {
-        return this.step;
-    }
-
 
 }
