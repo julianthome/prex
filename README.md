@@ -15,7 +15,7 @@ string *s'* is acceptable by *r*.
 [![Linux Build Status](https://img.shields.io/travis/julianthome/prex/master.svg?label=Linux%20build)][travis]
 [![Windows Build status](https://img.shields.io/appveyor/ci/julianthome/prex/master.svg?label=Windows%20build)][appveyor]
 [![Test Coverage](https://codecov.io/gh/julianthome/prex/branch/master/graph/badge.svg)][coverage]
-[![Code Climate](https://codeclimate.com/github/julianthome/prex/badges/gpa.svg)][codeclimate]
+[![Code Climate](https://codeclimate.com/github/julianthome/prex/badges/issue_count.svg)][codeclimate]
 
 [licence]: https://opensource.org/licenses/mit
 [language]: https://www.java.com
