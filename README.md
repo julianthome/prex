@@ -8,7 +8,7 @@ string *s'* is acceptable by *r*.
 # Status
 
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)][licence]
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)][licence]
 [![Language](http://img.shields.io/badge/language-java-brightgreen.svg)][language]
 [![Maven](https://maven-badges.herokuapp.com/maven-central/com.github.julianthome/prex/badge.svg)][maven]
 [![Javadoc](https://javadoc-emblem.rhcloud.com/doc/com.github.julianthome/prex/badge.svg)][javadoc]
