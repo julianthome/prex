@@ -10,8 +10,6 @@ string *s'* is acceptable by *r*.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)][licence]
 [![Language](http://img.shields.io/badge/language-java-brightgreen.svg?style=flat-square)][language]
-[![Maven](https://maven-badges.herokuapp.com/maven-central/com.github.julianthome/prex/badge.svg)][maven]
-[![Javadoc](https://javadoc-emblem.rhcloud.com/doc/com.github.julianthome/prex/badge.svg)][javadoc]
 [![Linux Build Status](https://img.shields.io/travis/julianthome/prex/master.svg?label=Linux%20build)][travis]
 [![Windows Build status](https://img.shields.io/appveyor/ci/julianthome/prex/master.svg?label=Windows%20build)][appveyor]
 [![Test Coverage](https://codecov.io/gh/julianthome/prex/branch/master/graph/badge.svg)][coverage]
@@ -19,8 +17,6 @@ string *s'* is acceptable by *r*.
 
 [licence]: https://opensource.org/licenses/mit
 [language]: https://www.java.com
-[maven]: https://maven-badges.herokuapp.com/maven-central/com.github.julianthome/prex
-[javadoc]: http://www.javadoc.io/doc/com.github.julianthome/prex
 [travis]: https://travis-ci.org/julianthome/prex
 [appveyor]: https://ci.appveyor.com/project/julianthome/prex
 [codeclimate]: https://codeclimate.com/github/julianthome/prex
