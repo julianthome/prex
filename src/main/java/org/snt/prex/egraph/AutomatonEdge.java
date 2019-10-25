@@ -81,7 +81,6 @@ public class AutomatonEdge implements Cloneable {
         return this.src;
     }
 
-
     public AutomatonNode getTarget() {
         return this.dest;
     }
@@ -142,5 +141,4 @@ public class AutomatonEdge implements Cloneable {
     public AutomatonEdge clone() {
         return new AutomatonEdge(this);
     }
-
 }

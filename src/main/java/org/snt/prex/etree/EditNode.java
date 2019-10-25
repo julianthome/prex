@@ -111,6 +111,5 @@ public class EditNode {
     public String toString() {
         return "" + this.id;
     }
-
 }
 

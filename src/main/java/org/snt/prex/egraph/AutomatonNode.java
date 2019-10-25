@@ -30,20 +30,17 @@ import dk.brics.automaton.State;
 
 public class AutomatonNode implements Cloneable {
 
-
     public enum NodeKind {
         ACCEPT,
         NORMAL,
         PARTITION
     }
 
-
     public enum Color {
         WHITE,
         GRAY,
         BLACK
     }
-
 
     private State s;
     private int id;
@@ -99,16 +96,13 @@ public class AutomatonNode implements Cloneable {
         this.s = s;
     }
 
-
     public void setId(int id) {
         this.id = id;
     }
 
-
     public void setKind(NodeKind kind) {
         this.kind = kind;
     }
-
 
     public AutomatonNode(AutomatonNode o) {
         this(o.kind, o.s, o.level);
@@ -122,7 +116,6 @@ public class AutomatonNode implements Cloneable {
         return this.level;
     }
 
-
     public int getId() {
         return this.id;
     }
@@ -134,7 +127,6 @@ public class AutomatonNode implements Cloneable {
     public NodeKind getKind() {
         return this.kind;
     }
-
 
     @Override
     public int hashCode() {
@@ -155,7 +147,6 @@ public class AutomatonNode implements Cloneable {
     public String toString() {
         return "id: " + this.id + "(" + this.level + ")";
     }
-
 
     public AutomatonNode clone() {
         return new AutomatonNode(this);

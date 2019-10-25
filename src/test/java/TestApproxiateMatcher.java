@@ -50,7 +50,6 @@ public class TestApproxiateMatcher {
         return rs.randomAlphanumeric(size0);
     }
 
-
     @Test
     public void testSimple1() {
         Prex am = new Prex("gcg[abc]+");
@@ -75,25 +74,16 @@ public class TestApproxiateMatcher {
 
     @Test
     public void testDistance() {
-
         String s1 = "o AZ 1";
         String s2 = "10 kr 1=o";
         int dist = StringUtils.getLevenshteinDistance(s1, s2);
-
         LOGGER.info("Dist {}", dist);
-
         double d = dist/(1.0*Math.max(s1.length(),s2.length()));
-
         LOGGER.info("D {}",d);
-
-
     }
-
 
     @Test
     public void testLevenshtein() {
-
-
         for (int i = 0; i < 100; i++) {
             String s1 = genRandString();
             String s2 = genRandString();
@@ -107,7 +97,6 @@ public class TestApproxiateMatcher {
 
     @Test
     public void testLevenshteinIgnoreCase() {
-
         for (int i = 0; i < 100; i++) {
             String s1 = genRandString();
             String s2 = genRandString();
@@ -120,7 +109,6 @@ public class TestApproxiateMatcher {
 
     @Test
     public void testRandRegExp() {
-
         for (int runs = 0; runs < 20; runs++) {
             Automaton a = new Automaton();
             Set<String> finiteStringSet = new HashSet<String>();
@@ -151,6 +139,5 @@ public class TestApproxiateMatcher {
             Assert.assertTrue(cost == min);
         }
     }
-
 }
 

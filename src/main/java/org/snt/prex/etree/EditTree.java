@@ -42,7 +42,6 @@ public class EditTree extends DirectedAcyclicGraph<EditNode, EditEdge> {
         super(EditEdge.class);
     }
 
-
     public LinkedList<EditNode> getLeafNodes() {
 
         LinkedList<EditNode> leafs = new LinkedList<EditNode>();
@@ -71,7 +70,6 @@ public class EditTree extends DirectedAcyclicGraph<EditNode, EditEdge> {
         return leafs;
     }
 
-
     public boolean isInExtendedList(EditNode n) {
 
         for (EditNode v : this.vertexSet()) {
@@ -86,7 +84,6 @@ public class EditTree extends DirectedAcyclicGraph<EditNode, EditEdge> {
 
         return false;
     }
-
 
     public LinkedList<EditNode> getMinLeafs(double globalMin) {
 
@@ -133,7 +130,6 @@ public class EditTree extends DirectedAcyclicGraph<EditNode, EditEdge> {
         StringBuilder sb = new StringBuilder();
         sb.append("\tdigraph {\n");
 
-
         for (EditNode n : this.vertexSet()) {
             String shape = "";
             String color = "";
@@ -146,13 +142,11 @@ public class EditTree extends DirectedAcyclicGraph<EditNode, EditEdge> {
                 color = "green";
             }
 
-
             sb.append("\t" + n.getName() + " [label=\"" + n.getLabel() + "\\npos:" + n.getPos() +
                     "\\nsum:" + n.getSum() + "\\nsteps:" + n.getSteps() + "\\nstate:" +
                     n.getAutomatonNode().getId() + "\\nid:" + n.getId() + "\\n\",shape=\"" +
                     shape + "\", color=\"" + color + "\"];\n");
         }
-
 
         for (EditEdge e : this.edgeSet()) {
 
@@ -174,6 +168,4 @@ public class EditTree extends DirectedAcyclicGraph<EditNode, EditEdge> {
 
         return sb.toString();
     }
-
-
 }

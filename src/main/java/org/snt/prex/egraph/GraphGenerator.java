@@ -36,7 +36,6 @@ import java.util.*;
 
 public class GraphGenerator {
 
-
     final static Logger LOGGER = LoggerFactory.getLogger(GraphGenerator.class);
 
     private Map<State, AutomatonNode> nlookup = null;
@@ -55,9 +54,7 @@ public class GraphGenerator {
         return gen;
     }
 
-    private GraphGenerator() {
-    }
-
+    private GraphGenerator() { }
 
     public AutomatonGraph buildEditGraph(AutomatonGraph g) {
 
@@ -90,7 +87,6 @@ public class GraphGenerator {
         }
 
         return cp;
-
     }
 
 
@@ -133,8 +129,4 @@ public class GraphGenerator {
 
         return g;
     }
-
-
-
-
 }

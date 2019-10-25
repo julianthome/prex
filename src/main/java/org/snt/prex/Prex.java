@@ -111,6 +111,17 @@ public class Prex {
                 .required(true)
                 .build();
 
+//        Option sf = Option.builder("if")
+//                .longOpt("string-file")
+//                .numberOfArgs(1)
+//                .valueSeparator(' ')
+//                .desc("file containting constrant string")
+//                .argName("string-file").valueSeparator()
+//                .required(true)
+//                .build();
+
+        OptionGroup stringInput = new OptionGroup().addOption(s);
+
         // regular expression
         Option r = Option.builder("r")
                 .longOpt("regex")
@@ -121,6 +132,17 @@ public class Prex {
                 .required(true)
                 .build();
 
+//        Option rf = Option.builder("rf")
+//                .longOpt("regex-file")
+//                .numberOfArgs(1)
+//                .valueSeparator(' ')
+//                .desc("file containting constrant regular expression")
+//                .argName("regex-file").valueSeparator()
+//                .required(true)
+//                .build();
+
+        OptionGroup regexInput = new OptionGroup().addOption(r);
+
         // cost
         Option c = Option.builder("c")
                 .longOpt("cost")
@@ -130,7 +152,6 @@ public class Prex {
                 .argName("cost").valueSeparator()
                 .required(true)
                 .build();
-
 
         Option t = Option.builder("t")
                 .longOpt("print-tree")
@@ -156,14 +177,12 @@ public class Prex {
                 .required(false)
                 .build();
 
-
-        options.addOption(s);
-        options.addOption(r);
+        options.addOptionGroup(stringInput);
+        options.addOptionGroup(regexInput);
         options.addOption(c);
         options.addOption(t);
         options.addOption(ic);
         options.addOption(n);
-
 
         CommandLineParser parser = new DefaultParser();
 
@@ -172,18 +191,32 @@ public class Prex {
         try {
             cmd = parser.parse(options, args);
             if (cmd.hasOption('h')) {
-                hformatter.printHelp("java -jar prex.jar -s <input string> -r <regex> [t]", options);
+                hformatter.printHelp("java -jar prex.jar", options);
                 System.exit(0);
             }
         } catch (ParseException e) {
-            hformatter.printHelp("java -jar prex.jar -s <input string> -r <regex> [t]", options);
+            hformatter.printHelp("java -jar prex.jar", options);
             System.err.println("Wrong command line argument combination " + e.getMessage());
             System.exit(-1);
         }
 
-        regex = cmd.getOptionValue("regex");
-        string = cmd.getOptionValue("string");
+        regex = "";
+        string = "";
 
+        if(cmd.hasOption("regex")) {
+            regex = cmd.getOptionValue("regex");
+        } else if (cmd.hasOption("regex-file")) {
+            regex = cmd.getOptionValue("regex-file");
+        }
+
+        if(cmd.hasOption("string")) {
+            string = cmd.getOptionValue("string");
+        } else if (cmd.hasOption("string-file")) {
+            string = cmd.getOptionValue("string-file");
+        }
+
+        System.out.println(String.format("input-string: '%s'", string));
+        System.out.println(String.format("input-regex: '%s'", regex));
 
         if (cmd.hasOption("cost")) {
             String[] acost = cmd.getOptionValues("cost");
@@ -223,10 +256,8 @@ public class Prex {
         return 0.0;
     }
 
-
     public void extendNode(EditTree et, String s, EditNode ancestor, boolean ignoreCase) {
         //LOGGER.info("ANCESTPOR " + ancestor.toString());
-
 
         boolean lengthok;
         char tocheck = '%';
@@ -252,7 +283,6 @@ public class Prex {
             tocheck = s.charAt(ancestor.getPos());
             out = eg.outgoingEdgesOf(ancestor.getAutomatonNode());
         }
-
 
         for (AutomatonEdge e : out) {
             int apos;
@@ -294,9 +324,7 @@ public class Prex {
             et.addVertex(en);
             et.addEdge(ancestor, en, ee);
             en.setSum(ancestor.getSum() + cost);
-
         }
-
     }
 
     public double evaluateCost(String s) {
@@ -328,13 +356,9 @@ public class Prex {
         // heuristic to initialize global minimum
         double globalMin = Math.max(eg.vertexSet().size() + 1, s.length());
 
-
-
         LinkedList<EditNode> leafs = et.getExtendableLeafNodes();
 
-
         while (!leafs.isEmpty()) {
-
 
             EditNode extendableLeaf = leafs.pop();
 
@@ -361,7 +385,6 @@ public class Prex {
             leafs = et.getMinLeafs(globalMin);
         }
 
-
         double cost;
 
         if (this.step != 0.0) {
@@ -380,8 +403,6 @@ public class Prex {
         }
 
         LOGGER.debug(et.toString());
-
         return cost;
     }
-
 }

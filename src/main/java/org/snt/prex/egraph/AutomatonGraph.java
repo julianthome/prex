@@ -52,7 +52,6 @@ public class AutomatonGraph extends DirectedPseudograph<AutomatonNode, Automaton
         this.start = start;
     }
 
-
     public Set<AutomatonEdge> getIncomingEdgesOfKind(AutomatonNode n, AutomatonEdge.EdgeKind k) {
 
         Set<AutomatonEdge> ret = new HashSet<AutomatonEdge>();
@@ -96,7 +95,6 @@ public class AutomatonGraph extends DirectedPseudograph<AutomatonNode, Automaton
     }
 
     public void addEdge(AutomatonEdge e) {
-
 
         AutomatonNode src = e.getSource();
         AutomatonNode dst = e.getTarget();
@@ -158,8 +156,6 @@ public class AutomatonGraph extends DirectedPseudograph<AutomatonNode, Automaton
         sb.append("}\n");
 
         return sb.toString();
-
-
     }
 
     public void addAllEdges(Collection<AutomatonEdge> edges) {
@@ -210,6 +206,4 @@ public class AutomatonGraph extends DirectedPseudograph<AutomatonNode, Automaton
 
         return g;
     }
-
-
 }
