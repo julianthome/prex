@@ -11,14 +11,12 @@ string *s'* is acceptable by *r*.
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)][licence]
 [![Language](http://img.shields.io/badge/language-java-brightgreen.svg?style=flat-square)][language]
 [![Linux Build Status](https://img.shields.io/travis/julianthome/prex/master.svg?label=Linux%20build)][travis]
-[![Windows Build status](https://img.shields.io/appveyor/ci/julianthome/prex/master.svg?label=Windows%20build)][appveyor]
 [![Test Coverage](https://codecov.io/gh/julianthome/prex/branch/master/graph/badge.svg)][coverage]
 [![Code Climate](https://codeclimate.com/github/julianthome/prex/badges/issue_count.svg)][codeclimate]
 
 [licence]: https://opensource.org/licenses/mit
 [language]: https://www.java.com
 [travis]: https://travis-ci.org/julianthome/prex
-[appveyor]: https://ci.appveyor.com/project/julianthome/prex
 [codeclimate]: https://codeclimate.com/github/julianthome/prex
 [coverage]: https://codecov.io/gh/julianthome/prex
 
