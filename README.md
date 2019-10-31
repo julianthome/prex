@@ -64,6 +64,16 @@ can be called with `java -jar prex.jar` and provides the following command line 
 | -s,--string &lt;string&gt; |  constant string                                  |
 | -t,--print-tree      |  print branch and bounds edit tree                  |
 
+Please note that the regex syntax is based on [dk.brics](https://www.brics.dk/automaton/doc/index.html?dk/brics/automaton/RegExp.html) and that paramters passed to prex should be quoted to prevent globbing. In case you need quotes with inside your string or you regex pattern, you could escape them as illustrated in the example below.
+
+```
+java -jar prex.jar -c 1.0 1.0 1.0 -s "\"" -r "\\\""
+input-string: '"'
+input-regex: '\"'
+Cost : 0.0
+```
+
+The pattern `\"` for the `s` parameter is equivalent to the quote character since it is treated as a normal Java string. The parameter passed through the `r` paramter is interpreted differently, because the regular expression syntax is based on [dk.brics](https://www.brics.dk/automaton/doc/index.html?dk/brics/automaton/RegExp.html); the pattern `\\\"` is interpreted as a quote charater.
 
 ## Library
 
