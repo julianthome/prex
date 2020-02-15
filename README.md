@@ -1,7 +1,7 @@
 # prex
 
 Approximate Regular Expression Matching for Java. prex determines
-how far a string *s* is from matching a regular expression *r*,
+the matching distance between a string *s* and a regular expression *r*,
 *i.e.* how many insertions, deletions and substitutions on *s* are at least required (minimum cost) such that the resulting
 string *s'* is acceptable by *r*.
 
